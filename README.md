@@ -71,7 +71,7 @@ El instalador:
 ## Personalización
 
 ### Temas
-El theme cambia entre oscuro y claro haciendo clic en el ícono del clima. Los colores pueden personalizarse desde el **Color Editor** widget.
+El theme cambia entre oscuro y claro haciendo clic en el ícono de la esquina inferior derecha (fuego-agua). Los colores pueden personalizarse desde el **Color Editor** widget.
 
 ### Wallpapers
 Los wallpapers incluidos son:
@@ -162,7 +162,7 @@ Para terminales con **tmux**: los plugins `tmux-resurrect` + `tmux-continuum` pr
 El script `clipboard-persist.sh` mantiene el portapapeles vivo incluso después de cerrar la aplicación que copió el contenido:
 
 - **Apps Wayland**: `wl-clip-persist` mantiene los datos automáticamente
-- **Apps XWayland** (Opera GX, etc.): `xclip` en segundo ciclo mantiene el contenido
+- **Apps XWayland**: `xclip` en segundo ciclo mantiene el contenido
 - **Historial**: `cliphist list \| cliphist decode` para recuperar copiados anteriores
 
 ### Session restore no funciona
