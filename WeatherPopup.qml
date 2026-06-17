@@ -13,7 +13,7 @@ PanelWindow {
     anchors.right: true
     implicitHeight: sheetHeight
     margins.bottom: 0
-    focusable: false
+    focusable: true
     exclusiveZone: 0
     color: "transparent"
 
