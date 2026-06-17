@@ -13,7 +13,7 @@ PanelWindow {
     anchors.right: true
     implicitHeight: sheetHeight
     margins.bottom: 0
-    focusable: true
+    focusable: false
     exclusiveZone: 0
     color: "transparent"
 
@@ -27,22 +27,6 @@ PanelWindow {
     onOpenChanged: {
         if (open) {
             popup.windowVisible = true
-            focusTimer.restart()
-        }
-    }
-
-    onVisibleChanged: {
-        if (visible) {
-            focusTimer.restart()
-        }
-    }
-
-    Timer {
-        id: focusTimer
-        interval: 150
-        onTriggered: {
-            popup.requestActivate()
-            if (popup.open && sheet) sheet.forceSearchFocus()
         }
     }
 
