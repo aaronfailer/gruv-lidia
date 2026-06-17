@@ -2,10 +2,12 @@
 
 Shell minimalista para **Hyprland** construido con **Quickshell**, basado en los colores Gruvbox.
 
-![Tema oscuro](screenshots/ThemeDark-a.jpg)
-![Tema claro](screenshots/ThemeWhite-b.jpg)
-
-<video src="screenshots/gruv-lidia-demo.mp4" controls></video>
+<a href="screenshots/gruv-lidia-demo.mp4">
+  <img src="screenshots/ThemeDark-a.jpg" alt="Tema oscuro - Click para ver demo">
+</a>
+<a href="screenshots/gruv-lidia-demo.mp4">
+  <img src="screenshots/ThemeWhite-b.jpg" alt="Tema claro - Click para ver demo">
+</a>
 
 ## Widgets incluidos
 
