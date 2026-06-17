@@ -276,6 +276,8 @@ REQUIRED_PKGS=(
   tmux
   flatpak
   xclip
+  slurp
+  wf-recorder
 )
 
 FONT_PKGS=(

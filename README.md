@@ -22,7 +22,9 @@ Shell minimalista para **Hyprland** construido con **Quickshell**, basado en los
 | **Task Manager** | Ocultar/minimizar aplicaciones y traerlas al frente de nuevo |
 | **Media Player** | Reproducción multimedia: subir/bajar volumen del programa específico, pausar, siguiente/anterior |
 | **Notifications** | Centro de notificaciones |
-| **Weather** | Clima actual con ícono que cambia de theme al clickearse |
+| **Weather** | Clima actual, ícono clickeable para ver pronóstico extendido |
+| **Theme Switcher** | Cambia entre tema oscuro y claro con animación circular (ícono fuego/agua en esquina inferior derecha) |
+| **Screen Recorder** | Grabación de pantalla con selector de área. Inicia/para con `SUPER+R` o click en el indicador rojo |
 
 ## Scripts
 
@@ -39,6 +41,7 @@ Shell minimalista para **Hyprland** construido con **Quickshell**, basado en los
 | `swap-kitty-theme.sh` | Cambia entre tema oscuro y claro en Kitty |
 | `fetch-weather.sh` | Obtiene datos del clima |
 | `art-bridge.sh` | Bridge para arte de MPRIS |
+| `screen-record.sh` | Grabación de pantalla con `slurp` + `wf-recorder` (selector de área) |
 | `notif-monitor.py` | Monitor de notificaciones |
 | `tray-procs.py` / `tray-procs.sh` | Backend de la bandeja del sistema |
 
@@ -90,6 +93,7 @@ Los atajos se configuran en `~/.config/hypr/hyprland.conf`. Los principales:
 | `SUPER + X` | Cerrar ventana |
 | `SUPER + 1-3` | Workspace 1-3 |
 | `ALT + Tab` | Minimizar/restaurar ventana |
+| `SUPER + R` | Iniciar/detener grabación de pantalla (con selector de área) |
 | `Print` | Captura de pantalla (región) |
 
 ## Estructura del repositorio
@@ -118,6 +122,7 @@ gruv-lidia/
 │   ├── fetch-weather.sh
 │   ├── search-location.sh
 │   ├── art-bridge.sh
+│   ├── screen-record.sh
 │   ├── notif-monitor.py
 │   ├── tray-procs.py
 │   └── tray-procs.sh
@@ -141,6 +146,7 @@ gruv-lidia/
 │
 ├── screenshots/                  # Capturas de pantalla
 │
+├── RecordIndicator.qml            # Indicador de grabación (punto rojo parpadeante)
 ├── *.qml                         # Widgets QML (40+ archivos)
 └── fuzzel-track.sh
 ```
@@ -162,7 +168,6 @@ Para terminales con **tmux**: los plugins `tmux-resurrect` + `tmux-continuum` pr
 El script `clipboard-persist.sh` mantiene el portapapeles vivo incluso después de cerrar la aplicación que copió el contenido:
 
 - **Apps Wayland**: `wl-clip-persist` mantiene los datos automáticamente
-- **Apps XWayland**: `xclip` en segundo ciclo mantiene el contenido
 - **Historial**: `cliphist list \| cliphist decode` para recuperar copiados anteriores
 
 ### Session restore no funciona
@@ -173,9 +178,9 @@ cat ~/.cache/session-restore.log
 ```
 
 ### Portapapeles no persiste
-Verificar que `wl-clip-persist` y `xclip` estén instalados:
+Verificar que `wl-clip-persist` esté instalado:
 ```bash
-paru -S wl-clip-persist-git xclip
+paru -S wl-clip-persist-git
 ```
 
 ## Licencia
