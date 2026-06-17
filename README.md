@@ -5,6 +5,8 @@ Shell minimalista para **Hyprland** construido con **Quickshell**, basado en los
 ![Tema oscuro](screenshots/ThemeDark-a.jpg)
 ![Tema claro](screenshots/ThemeWhite-b.jpg)
 
+<video src="screenshots/gruv-lidia-demo.mp4" controls></video>
+
 ## Widgets incluidos
 
 | Widget | Descripción |
@@ -83,10 +85,6 @@ Los wallpapers incluidos son:
 - `claro.jpg` (tema claro alternativo)
 
 Para usar tus propios wallpapers, colocá imágenes `.jpg`, `.jpeg`, `.png` o `.webp` en el directorio configurado durante la instalación (por defecto `~/Wallpapers/Wallpaper-imagen/`) y seleccionalos desde el widget de wallpapers.
-
-### Video demo
-
-<video src="screenshots/gruv-lidia-demo.mp4" controls></video>
 
 ### Atajos de teclado
 Los atajos se configuran en `~/.config/hypr/hyprland.conf`. Los principales:
