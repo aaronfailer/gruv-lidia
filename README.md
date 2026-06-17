@@ -165,11 +165,6 @@ El script `clipboard-persist.sh` mantiene el portapapeles vivo incluso después 
 - **Apps XWayland** (Opera GX, etc.): `xclip` en segundo ciclo mantiene el contenido
 - **Historial**: `cliphist list \| cliphist decode` para recuperar copiados anteriores
 
-## Troubleshooting
-
-### ARC Raiders (error ARAV1011)
-El parche 1.33.0 de Embark expandió Denuvo Anti-Cheat, que bloquea Linux/Proton como falso positivo. No hay solución local — reportar a https://id.embark.games/arc-raiders/support
-
 ### Session restore no funciona
 Revisar los logs:
 ```bash
