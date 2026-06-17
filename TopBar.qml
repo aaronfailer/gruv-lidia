@@ -31,6 +31,17 @@ PanelWindow {
     }
 
     property bool notificationOpen: false
+    property bool _notificationLocked: false
+
+    function toggleNotification() {
+        if (_notificationLocked) return
+        _notificationLocked = true
+        notificationOpen = !notificationOpen
+        Qt.callLater(function() {
+            _notificationLocked = false
+        })
+    }
+
     onNotificationOpenChanged: {
         notifPopup.open = notificationOpen
         notificationWidget.panelOpen = notificationOpen
@@ -167,9 +178,7 @@ PanelWindow {
         NotificationWidget {
             id: notificationWidget
             anchors.centerIn: parent
-            onToggled: {
-                topBar.notificationOpen = !topBar.notificationOpen
-            }
+            onToggled: topBar.toggleNotification()
         }
     }
 

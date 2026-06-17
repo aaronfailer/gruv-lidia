@@ -276,8 +276,8 @@ seen_cmdlines = set()
 
 for c in clients:
     wid = c.get("workspace", {}).get("id", -1)
-    if wid <= 0:
-        log(f"  skip ws<={wid} class={c.get('class','?')}")
+    if wid <= 0 or wid == 99:
+        log(f"  skip ws={wid} class={c.get('class','?')}")
         continue
 
     cls = c.get("class", "")

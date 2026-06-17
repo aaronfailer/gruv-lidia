@@ -1781,6 +1781,7 @@ Item {
                             { label: "Descargas", icon: "\uF019", path: root.sidebarDirs.download_dir || "" },
                             { label: "M\u00FAsica", icon: "\uF001", path: root.sidebarDirs.music_dir || "" },
                             { label: "Im\u00E1genes", icon: "\uF1C5", path: root.sidebarDirs.pictures_dir || "" },
+                            { label: "V\u00EDdeos", icon: "\uF008", path: root.sidebarDirs.videos_dir || "" },
                             { label: "Papelera", icon: "\uF1F8", path: "" }
                         ]
 
@@ -2766,7 +2767,7 @@ Item {
                 ActionButton { btnText: "\uF0EA"; btnLabel: "Pegar"; btnAction: doPaste; btnEnabled: clipboardPaths.length > 0 }
                 ActionButton { btnText: "\uF044"; btnLabel: "Renombrar"; btnAction: doRename; btnEnabled: selectedEntries.length === 1 }
                 ActionButton { btnText: "\uF1F8"; btnLabel: "Papelera"; btnAction: doTrash; btnEnabled: selectedEntries.length > 0 }
-                ActionButton { btnText: "\u2297"; btnLabel: "Eliminar"; btnAction: promptDelete; btnColor: Theme.accentRed; btnEnabled: selectedEntries.length > 0 }
+                ActionButton { btnText: "\u2297"; btnLabel: "Eliminar"; btnAction: function() { promptDelete() }; btnColor: Theme.accentRed; btnEnabled: selectedEntries.length > 0 }
             }
         }
     }

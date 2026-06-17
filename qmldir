@@ -26,6 +26,7 @@ PopupShell 1.0 PopupShell.qml
 PowerPanel 1.0 PowerPanel.qml
 PowerSheet 1.0 PowerSheet.qml
 PowerWidget 1.0 PowerWidget.qml
+RecordIndicator 1.0 RecordIndicator.qml
 RightBorder 1.0 RightBorder.qml
 SheetCanvas 1.0 SheetCanvas.qml
 shell 1.0 shell.qml

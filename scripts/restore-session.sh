@@ -3,6 +3,16 @@
 STATE_FILE="$HOME/.cache/hyprland-session.json"
 LOG="$HOME/.cache/session-restore.log"
 
+FLAG="/tmp/hyprland-session-restore-flag"
+
+if [ ! -f "$FLAG" ]; then
+    echo "[$(date +%H:%M:%S)] restore: sin flag (cold boot o apagado), no se restaura" > "$LOG"
+    rm -f "$STATE_FILE"
+    exit 0
+fi
+
+rm -f "$FLAG"
+
 if [ ! -s "$STATE_FILE" ]; then
     echo "[$(date +%H:%M:%S)] restore: no hay sesion guardada" > "$LOG"
     exit 0
@@ -74,6 +84,9 @@ def is_flatpak(cmdline):
 by_ws = {}
 for w in windows:
     ws = w["workspace"]
+    if ws == 99:
+        log(f"  skip ws=99 (minimized): {w.get('class','?')}")
+        continue
     by_ws.setdefault(ws, []).append(w)
 
 log(f"Workspaces: {sorted(by_ws.keys())}")

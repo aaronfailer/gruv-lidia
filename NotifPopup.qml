@@ -19,7 +19,7 @@ PanelWindow {
     implicitWidth: popupWidth
     implicitHeight: bg.height
     color: "transparent"
-    focusable: true
+    focusable: false
 
     anchors { right: true; top: true }
     WlrLayershell.layer: WlrLayer.Overlay
@@ -30,7 +30,7 @@ PanelWindow {
     onOpenChanged: {
         if (open) {
             root._windowVisible = true
-            focusTimer.restart()
+            // focusTimer.restart()  // DIAGNÓSTICO: desactivado para probar si requestActivate causa el bug
         }
     }
 
@@ -38,7 +38,7 @@ PanelWindow {
         id: focusTimer
         interval: 150
         onTriggered: {
-            root.requestActivate()
+            // root.requestActivate()  // DIAGNÓSTICO: desactivado para probar si requestActivate causa el bug
         }
     }
 

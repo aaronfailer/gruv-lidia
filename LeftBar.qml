@@ -267,6 +267,13 @@ PanelWindow {
             anchors.horizontalCenter: barCol.horizontalCenter
         }
 
+        RecordIndicator {
+            id: recordIndicator
+            anchors.top: taskWidget.bottom
+            anchors.topMargin: 4
+            anchors.horizontalCenter: barCol.horizontalCenter
+        }
+
         ClockWidget {
             id: clock
             anchors.centerIn: parent
