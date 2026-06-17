@@ -54,7 +54,6 @@ PanelWindow {
                 leftBar.bluetoothOpen = false
                 leftBar.internetOpen = false
                 leftBar.updateOpen = false
-                leftBar.fileOpen = false
                 topBar.notificationOpen = false
             }
         }
