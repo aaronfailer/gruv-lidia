@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell.Io
+import "."
 
 Item {
     id: panel
@@ -12,7 +13,7 @@ Item {
         { label: "Apagar",    glyph: "⏻", cmd: ["systemctl", "poweroff"], color: "#fb4934" },
         { label: "Reiniciar", glyph: "↺", cmd: ["systemctl", "reboot"],   color: "#fabd2f" },
         { label: "Suspender", glyph: "⏾", cmd: ["systemctl", "suspend"],  color: "#83a598" },
-        { label: "Salir",     glyph: "󰍃", cmd: ["hyprctl", "dispatch", "exit"], color: "#b8bb26" }
+        { label: "Salir",     glyph: "󰍃", cmd: ["bash", "-c", "$HOME/.local/bin/hyprctl-exit"], color: "#b8bb26" }
     ]
 
     Row {
@@ -41,19 +42,19 @@ Item {
                         radius: 19
                         color: btnHover.containsMouse ? Qt.rgba(
                             parseInt(modelData.color.slice(1,3), 16) / 255,
-                                                                parseInt(modelData.color.slice(3,5), 16) / 255,
-                                                                parseInt(modelData.color.slice(5,7), 16) / 255,
-                                                                0.15
-                        ) : "#282828"
-                        border.color: btnHover.containsMouse ? modelData.color : "#504945"
+                                                                 parseInt(modelData.color.slice(3,5), 16) / 255,
+                                                                 parseInt(modelData.color.slice(5,7), 16) / 255,
+                                                                 Theme.opacityFaint
+                        ) : Theme.backgroundAlt
+                        border.color: btnHover.containsMouse ? modelData.color : Theme.border
                         border.width: btnHover.containsMouse ? 2 : 1
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         Text {
                             anchors.centerIn: parent
-                            font.family: "FiraCode Nerd Font"
-                            font.pixelSize: 16
-                            color: btnHover.containsMouse ? modelData.color : "#928374"
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.fontSize16
+                            color: btnHover.containsMouse ? modelData.color : Theme.textMuted
                             text: modelData.glyph
                         }
 
@@ -68,9 +69,9 @@ Item {
 
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        font.family: "FiraCode Nerd Font"
-                        font.pixelSize: 9
-                        color: btnHover.containsMouse ? modelData.color : "#928374"
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize9
+                        color: btnHover.containsMouse ? modelData.color : Theme.textMuted
                         text: modelData.label
                     }
                 }

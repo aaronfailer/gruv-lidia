@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray
+import "."
 
 Item {
     id: root
@@ -10,9 +11,9 @@ Item {
 
     Text {
         anchors.centerIn: parent
-        font.family: "FiraCode Nerd Font"
-        font.pixelSize: 14
-        color: root.trayOpen ? "#fabd2f" : "#b8bb26"
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSize14
+        color: root.trayOpen ? Theme.iconWidgetOpen : Theme.iconWidget
         text: "󰺑"
     }
 

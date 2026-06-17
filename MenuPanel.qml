@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "."
 
 Item {
     id: panel
@@ -10,34 +11,28 @@ Item {
     implicitHeight: panelHeight
 
     signal requestClose()
+    signal placeRequested(string path)
 
     property bool searchActive: false
     property var recentApps: []
-    property var allApps: []
-    property var filteredApps: []
+    property var searchResults: []
 
-    readonly property var defaultApps: [
-        { name: "Firefox",    icon: "firefox",               exec: "firefox" },
-        { name: "Chromium",   icon: "chromium",              exec: "chromium" },
-        { name: "Discord",    icon: "discord",               exec: "discord" },
-        { name: "Steam",      icon: "steam",                 exec: "steam" },
-        { name: "Alacritty",  icon: "Alacritty",             exec: "alacritty" },
-        { name: "OBS",        icon: "com.obsproject.Studio",  exec: "obs" },
-        { name: "Cursor",     icon: "cursor",                exec: "cursor" },
-        { name: "Dolphin",    icon: "org.kde.dolphin",       exec: "dolphin" }
-    ]
-
-    function trackLaunch(name, icon, exec) {
-        trackProcess.trackName = name
-        trackProcess.trackIcon = icon
-        trackProcess.trackExec = exec
+    function trackLaunch(entry) {
+        trackProcess.trackName = entry.name
+        trackProcess.trackIcon = entry.icon || "application-x-executable"
+        trackProcess.trackExec = entry.execString
         trackProcess.running = true
+    }
+
+    function forceSearchFocus() {
+        searchInput.forceActiveFocus()
     }
 
     function parseHistory() {
         const text = historyFile.text()
         if (!text || text.trim() === "") {
-            panel.recentApps = panel.defaultApps
+            const apps = DesktopEntries.applications.values
+            panel.recentApps = apps.slice(0, Math.min(8, apps.length))
             return
         }
         const lines = text.trim().split("\n").reverse()
@@ -47,27 +42,39 @@ Item {
             const parts = lines[i].split("|")
             if (parts.length === 3 && !seen[parts[0]] && parts[0].trim() !== "") {
                 seen[parts[0]] = true
-                result.push({ name: parts[0], icon: parts[1], exec: parts[2] })
+                const entry = DesktopEntries.heuristicLookup(parts[0])
+                if (entry) {
+                    result.push(entry)
+                } else {
+                    // Fallback: entry sintético del log (Wine, AppImages, etc.)
+                    result.push({
+                        "name": parts[0],
+                        "icon": parts[1] || "application-x-executable",
+                        "execString": parts[2]
+                    })
+                }
             }
         }
-        panel.recentApps = result.length > 0 ? result : panel.defaultApps
+        const apps = DesktopEntries.applications.values
+        panel.recentApps = result.length > 0 ? result : apps.slice(0, Math.min(8, apps.length))
     }
 
     function updateFilter() {
         const q = searchInput.text.toLowerCase().trim()
         if (q === "") {
-            panel.filteredApps = []
+            panel.searchResults = []
             panel.searchActive = false
             return
         }
         const results = []
-        for (let i = 0; i < panel.allApps.length; i++) {
+        const apps = DesktopEntries.applications.values
+        for (let i = 0; i < apps.length; i++) {
             if (results.length >= 8) break
-            if (panel.allApps[i].name.toLowerCase().includes(q)) {
-                results.push(panel.allApps[i])
+            if (apps[i].name.toLowerCase().includes(q)) {
+                results.push(apps[i])
             }
         }
-        panel.filteredApps = results
+        panel.searchResults = results
         panel.searchActive = true
     }
 
@@ -76,31 +83,6 @@ Item {
         path: Quickshell.env("HOME") + "/.config/quickshell/app_history.log"
         onTextChanged: panel.parseHistory()
         Component.onCompleted: reload()
-    }
-
-    FileView {
-        id: appsFile
-        path: "/tmp/qs_all_apps.txt"
-        onTextChanged: {
-            const text = appsFile.text()
-            if (!text || text.trim() === "") return
-            const lines = text.trim().split("\n")
-            const result = []
-            for (let i = 0; i < lines.length; i++) {
-                const parts = lines[i].split("|")
-                if (parts.length === 3) {
-                    result.push({ name: parts[0], icon: parts[1], exec: parts[2] })
-                }
-            }
-            panel.allApps = result
-        }
-    }
-
-    Process {
-        id: listProcess
-        command: ["bash", Quickshell.env("HOME") + "/.config/quickshell/scripts/list-apps.sh"]
-        running: true
-        onExited: appsFile.reload()
     }
 
     Process {
@@ -123,12 +105,9 @@ Item {
         onTriggered: historyFile.reload()
     }
 
-    Timer {
-        id: appListReloadTimer
-        interval: 30000
-        repeat: true
-        running: true
-        onTriggered: listProcess.running = true
+    Connections {
+        target: DesktopEntries
+        function onApplicationsChanged() { panel.parseHistory() }
     }
 
     Row {
@@ -144,16 +123,10 @@ Item {
             Rectangle {
                 width: parent.width
                 height: 28
-                radius: 8
-                color: searchInput.activeFocus ? "#504945" : "#3c3836"
-                border.color: searchInput.activeFocus ? "#b8bb26" : "#504945"
+                radius: Theme.radius8
+                color: searchInput.activeFocus ? Theme.surfaceHover : Theme.surface
+                border.color: searchInput.activeFocus ? Theme.accent : Theme.border
                 border.width: 1
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.IBeamCursor
-                    onClicked: searchInput.forceActiveFocus()
-                }
 
                 TextInput {
                     id: searchInput
@@ -161,15 +134,15 @@ Item {
                     anchors.leftMargin: 10
                     anchors.rightMargin: 10
                     verticalAlignment: Text.AlignVCenter
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 11
-                    color: "#ebdbb2"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize11
+                    color: Theme.textPrimary
                     cursorVisible: activeFocus
                     onTextChanged: panel.updateFilter()
                     Keys.onEscapePressed: {
                         searchInput.text = ""
                         searchInput.focus = false
-                        panel.filteredApps = []
+                        panel.searchResults = []
                         panel.searchActive = false
                     }
                 }
@@ -178,9 +151,9 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: 10
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 11
-                    color: "#665c54"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize11
+                    color: Theme.textDim
                     text: "Buscar aplicaciones..."
                     visible: searchInput.text === "" && !searchInput.activeFocus
                 }
@@ -196,11 +169,9 @@ Item {
                     delegate: MenuAppItem {
                         required property var modelData
                         width: parent.width
-                        appName: modelData.name
-                        iconName: modelData.icon
-                        execCmd: modelData.exec
+                        desktopEntry: modelData
                         onLaunched: {
-                            panel.trackLaunch(modelData.name, modelData.icon, modelData.exec)
+                            panel.trackLaunch(modelData)
                             panel.requestClose()
                         }
                     }
@@ -214,25 +185,23 @@ Item {
 
                 Text {
                     width: parent.width
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 10
-                    color: "#665c54"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize10
+                    color: Theme.textDim
                     text: "Resultados"
-                    visible: panel.filteredApps.length > 0
+                    visible: panel.searchResults.length > 0
                     topPadding: 4
                     bottomPadding: 2
                 }
 
                 Repeater {
-                    model: panel.filteredApps
+                    model: panel.searchResults
                     delegate: MenuAppItem {
                         required property var modelData
                         width: parent.width
-                        appName: modelData.name
-                        iconName: modelData.icon
-                        execCmd: modelData.exec
+                        desktopEntry: modelData
                         onLaunched: {
-                            panel.trackLaunch(modelData.name, modelData.icon, modelData.exec)
+                            panel.trackLaunch(modelData)
                             panel.requestClose()
                         }
                     }
@@ -240,11 +209,11 @@ Item {
 
                 Text {
                     width: parent.width
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 10
-                    color: "#665c54"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize10
+                    color: Theme.textDim
                     text: "Sin resultados"
-                    visible: panel.filteredApps.length === 0
+                    visible: panel.searchResults.length === 0
                     horizontalAlignment: Text.AlignHCenter
                 }
             }
@@ -253,8 +222,8 @@ Item {
         Rectangle {
             width: 1
             height: parent.height
-            color: "#3c3836"
-            opacity: 0.7
+            color: Theme.surface
+            opacity: Theme.opacityDim
         }
 
         Column {
@@ -277,6 +246,7 @@ Item {
                     label: modelData.label
                     glyph: modelData.glyph
                     path: modelData.path
+                    onClicked: panel.placeRequested(path)
                 }
             }
         }
@@ -288,7 +258,7 @@ Item {
         repeat: false
         onTriggered: {
             if (!searchInput.activeFocus && searchInput.text === "") {
-                panel.filteredApps = []
+                panel.searchResults = []
                 panel.searchActive = false
             }
         }

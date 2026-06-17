@@ -1,20 +1,26 @@
 import Quickshell
 import QtQuick
+import Quickshell.Services.Mpris
+import "."
 
 PopupWindow {
     id: popup
     readonly property int sheetWidth: sheet.sheetWidth
     readonly property int sheetHeight: sheet.lipHeight + sheet.bodyHeight
-    readonly property int extra: 30
+    readonly property int extra: 40
     implicitWidth: sheetWidth
     implicitHeight: sheetHeight + extra * 2
     color: "transparent"
 
     property bool open: false
     property bool windowVisible: false
+    property MprisPlayer currentPlayer: null
+    property int currentPlayerIndex: -1
     visible: windowVisible
 
-    signal requestClose()
+    signal popupEntered()
+    signal popupExited()
+    signal playerSelected(int index)
 
     onOpenChanged: {
         if (open)
@@ -31,19 +37,19 @@ PopupWindow {
         clip: false
 
         HoverHandler {
-            id: hoverHandler
             onHoveredChanged: {
-                if (!hovered) closeTimer.start()
-                    else closeTimer.stop()
+                if (hovered) popupEntered()
+                else popupExited()
             }
         }
 
-        MenuSheet {
+        PlayerSheet {
             id: sheet
-            x: popup.open ? 0 : -popup.sheetWidth
-            onRequestClose: popup.requestClose()
-
-            Behavior on x {
+            player: currentPlayer
+            playerIndex: currentPlayerIndex
+            onPlayerSelected: popup.playerSelected(index)
+            y: popup.open ? 0 : -popup.sheetHeight
+            Behavior on y {
                 NumberAnimation {
                     duration: 380
                     easing.type: Easing.OutCubic
@@ -54,14 +60,5 @@ PopupWindow {
                 }
             }
         }
-    }
-
-    property bool searchActive: sheet.searchActive
-
-    Timer {
-        id: closeTimer
-        interval: popup.searchActive ? 800 : 300
-        repeat: false
-        onTriggered: popup.requestClose()
     }
 }

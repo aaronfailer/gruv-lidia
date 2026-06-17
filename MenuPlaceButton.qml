@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell.Io
+import "."
 
 Item {
     id: btn
@@ -13,8 +13,8 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 6
-        color: hover.containsMouse ? "#3c3836" : "transparent"
+        radius: Theme.radius6
+        color: hover.containsMouse ? Theme.surfaceHover : "transparent"
     }
 
     Row {
@@ -24,25 +24,20 @@ Item {
         spacing: 6
 
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 12
-            color: hover.containsMouse ? "#b8bb26" : "#928374"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize12
+            color: hover.containsMouse ? Theme.accent : Theme.textMuted
             text: btn.glyph
             verticalAlignment: Text.AlignVCenter
         }
 
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 11
-            color: hover.containsMouse ? "#ebdbb2" : "#a89984"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize11
+            color: hover.containsMouse ? Theme.textPrimary : Theme.textSecondary
             text: btn.label
             verticalAlignment: Text.AlignVCenter
         }
-    }
-
-    Process {
-        id: opener
-        command: ["bash", "-c", "nohup dolphin '" + btn.path + "' &>/dev/null &"]
     }
 
     MouseArea {
@@ -50,9 +45,6 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            opener.running = true
-            btn.clicked()
-        }
+        onClicked: btn.clicked()
     }
 }

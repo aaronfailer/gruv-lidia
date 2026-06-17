@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import "."
 
 Item {
     id: root
@@ -13,6 +14,21 @@ Item {
 
     function refresh() {
         taskFetcher.running = true
+    }
+
+    function resolveIcon(cls) {
+        if (!cls) return ""
+        var entry = DesktopEntries.heuristicLookup(cls)
+        if (entry && entry.icon) return entry.icon
+        var stripped = cls.replace(/\.exe$/i, "")
+        if (stripped !== cls) {
+            entry = DesktopEntries.heuristicLookup(stripped)
+            if (entry && entry.icon) return entry.icon
+            var winename = "wine-" + stripped.toLowerCase()
+            entry = DesktopEntries.heuristicLookup(winename)
+            if (entry && entry.icon) return entry.icon
+        }
+        return cls
     }
 
     function parseTasks(text) {
@@ -47,10 +63,7 @@ Item {
         root.windows = result
     }
 
-    Component.onCompleted: {
-        refresh()
-        refreshTimer.start()
-    }
+    Component.onCompleted: refresh()
 
     Connections {
         target: Hyprland
@@ -61,8 +74,27 @@ Item {
     Timer {
         id: refreshTimer
         interval: 2000
+        running: true
         repeat: true
         onTriggered: refresh()
+    }
+
+    Process {
+        id: eventMonitor
+        command: ["bash", "-c", "FP=$(find /run -path '*/hypr/*/.socket2.sock' -type s 2>/dev/null | head -1) && [ -n \"$FP\" ] && socat -U UNIX-CONNECT:\"$FP\" - 2>/dev/null | while read line; do case $line in window*|focusedmon*) echo \"$line\" > /tmp/qs_hypr_events.tmp;; esac; done"]
+        running: true
+        onExited: monitorRestart.running = true
+    }
+
+    Timer {
+        id: monitorRestart
+        interval: 1000
+        onTriggered: eventMonitor.running = true
+    }
+
+    FileView {
+        path: "/tmp/qs_hypr_events.tmp"
+        onTextChanged: refresh()
     }
 
     Process {
@@ -80,8 +112,8 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#282828"
-        radius: 8
+        color: Theme.backgroundAlt
+        radius: Theme.radius8
     }
 
     Item {
@@ -92,9 +124,9 @@ Item {
         Text {
             anchors.centerIn: parent
             text: "\uFAA8"
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 16
-            color: "#504945"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize16
+            color: Theme.border
         }
     }
 
@@ -117,7 +149,9 @@ Item {
                 required property var modelData
                 clientAddress: modelData.address.replace(/^0x/, "")
                 clientClass: modelData.initialClass || modelData.class || ""
+                clientIcon: root.resolveIcon(modelData.initialClass || modelData.class || "")
                 isMinimized: modelData.workspace ? modelData.workspace.id === 99 : false
+                onTaskChanged: root.refresh()
             }
         }
 
@@ -125,9 +159,9 @@ Item {
             visible: root.windows.length > 5
             anchors.horizontalCenter: parent.horizontalCenter
             text: "\u25B4"
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 10
-            color: "#a89984"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize10
+            color: Theme.textSecondary
 
             MouseArea {
                 anchors.fill: parent
@@ -140,10 +174,10 @@ Item {
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "\uEE80"
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 14
-            color: "#b8bb26"
-            opacity: 0.6
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize14
+            color: Theme.iconWidget
+            opacity: Theme.opacityMedium
         }
     }
 }

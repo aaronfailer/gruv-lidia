@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 
 Item {
     id: panel
@@ -48,17 +49,17 @@ Item {
 
         anchors.fill: parent
         visible: panel.showChrome
-        radius: 16
-        color: "#1d2021"
-        border.color: Qt.rgba(60 / 255, 56 / 255, 54 / 255, 0.85)
+        radius: Theme.radius16
+        color: Theme.background
+        border.color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 0.85)
         border.width: 1
 
         Rectangle {
             anchors.fill: parent
             anchors.margins: 1
             radius: parent.radius - 1
-            color: "#282828"
-            opacity: 0.35
+            color: Theme.backgroundAlt
+            opacity: Theme.opacitySubtle
         }
     }
 
@@ -77,10 +78,10 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 height: 28
                 text: panel.monthNames[panel.viewMonth] + " " + panel.viewYear
-                font.family: "FiraCode Nerd Font"
-                font.pixelSize: 13
-                font.weight: Font.Medium
-                color: "#ebdbb2"
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSize13
+                font.weight: Theme.fontWeightMedium
+                color: Theme.textPrimary
             }
 
             Row {
@@ -108,8 +109,8 @@ Item {
         Rectangle {
             width: parent.width
             height: 1
-            color: "#3c3836"
-            opacity: panel.showChrome ? 0.7 : 0.45
+            color: Theme.surface
+            opacity: panel.showChrome ? Theme.opacityDim : 0.45
         }
 
         CalendarMonthGrid {

@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "."
 
 Item {
     id: panel
@@ -22,7 +23,9 @@ Item {
         command: [
             "bash",
             "-c",
-            "find /home/aaronfailer/Wallpapers/Wallpaper-imagen -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) > /tmp/qs_wallpapers.txt"
+            "find \"$1\" -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) > /tmp/qs_wallpapers.txt",
+            "_",
+            Quickshell.env("HOME") + "/Wallpapers/Wallpaper-imagen"
         ]
 
         running: true
@@ -65,7 +68,7 @@ Item {
         property string selectedPath: ""
 
         command: [
-            "/home/aaronfailer/.config/quickshell/scripts/set-wallpaper.sh",
+            Quickshell.env("HOME") + "/.config/quickshell/scripts/set-wallpaper.sh",
             selectedPath
         ]
     }
@@ -82,9 +85,9 @@ Item {
         spacing: 4
 
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 11
-            color: "#928374"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize11
+            color: Theme.textMuted
             text: "Wallpapers"
         }
 
@@ -100,7 +103,7 @@ Item {
                 radius: 4
 
                 color: wallpaperHover.containsMouse
-                ? "#3c3836"
+                ? Theme.surfaceHover
                 : "transparent"
 
                 Text {
@@ -108,7 +111,7 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: 6
 
-                    color: "#ebdbb2"
+                    color: Theme.textPrimary
 
                     text: modelData.name
                 }

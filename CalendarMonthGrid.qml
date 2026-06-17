@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 
 Column {
     id: grid
@@ -41,9 +42,9 @@ Column {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: modelData
-                font.family: "FiraCode Nerd Font"
-                font.pixelSize: 10
-                color: "#928374"
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSize10
+                color: Theme.textMuted
             }
         }
     }
@@ -76,18 +77,18 @@ Column {
                     height: parent.height - 4
                     radius: 6
                     visible: parent.inMonth
-                    color: parent.isToday ? "#3c3836" : "transparent"
+                    color: parent.isToday ? Theme.surface : "transparent"
                     border.width: parent.isToday ? 1 : 0
-                    border.color: "#b8bb26"
+                    border.color: Theme.accent
                 }
 
                 Text {
                     anchors.centerIn: parent
                     visible: parent.inMonth
                     text: parent.dayNumber
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 11
-                    color: parent.isToday ? "#b8bb26" : "#ebdbb2"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize11
+                    color: parent.isToday ? Theme.accent : Theme.textPrimary
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }

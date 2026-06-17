@@ -1,5 +1,6 @@
 import Quickshell
 import QtQuick
+import "."
 
 Item {
     id: root
@@ -11,12 +12,12 @@ Item {
 
     Text {
         anchors.centerIn: parent
-        font.family: "FiraCode Nerd Font"
-        font.pixelSize: 16
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSize16
 
         color: root.wallpaperOpen
-        ? "#fabd2f"
-        : "#b8bb26"
+        ? Theme.iconWidgetOpen
+        : Theme.iconWidget
 
         text: "󰸉"
     }

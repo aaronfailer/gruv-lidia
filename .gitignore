@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.bak
+app_history.log
+color_editor_state.json
+file-preferences.json
+filepanel-state.json
+theme_state.json
+weather_location.json
+.cache/

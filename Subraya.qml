@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 
 Rectangle {
     id: root
@@ -7,10 +8,10 @@ Rectangle {
     property Item target
 
     // Ajustes opcionales
-    property color lineColor: "#b8bb26"
+    property color lineColor: Theme.accent
     property int thickness: 2
     property int offset: 2
-    property real opacityLevel: 0.9
+    property real opacityLevel: Theme.opacityHigh
 
     height: thickness
     radius: thickness / 2

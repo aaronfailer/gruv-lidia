@@ -1,0 +1,4 @@
+#!/bin/bash
+# Guarda la sesion y cierra Hyprland
+$HOME/.config/quickshell/scripts/save-session.sh
+hyprctl dispatch exit

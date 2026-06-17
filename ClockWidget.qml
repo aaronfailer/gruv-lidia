@@ -1,5 +1,7 @@
 import Quickshell
 import QtQuick
+import "."
+
 Item {
     id: root
     property bool calendarOpen: false
@@ -32,9 +34,9 @@ Item {
                     id: numText
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 11
-                    color: root.calendarOpen ? "#fabd2f" : "#b8bb26"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize11
+                    color: root.calendarOpen ? Theme.iconWidgetOpen : Theme.iconWidget
                     text: Qt.formatDateTime(clock.date, modelData)
                 }
                 Rectangle {
@@ -45,8 +47,8 @@ Item {
                     width: numText.width * 0.8
                     height: 2
                     radius: 1
-                    color: root.calendarOpen ? "#fabd2f" : "#b8bb26"
-                    opacity: 0.9
+                    color: root.calendarOpen ? Theme.iconWidgetOpen : Theme.iconWidget
+                    opacity: Theme.opacityHigh
                 }
             }
         }
@@ -67,9 +69,9 @@ Item {
                     id: numText
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
-                    font.family: "FiraCode Nerd Font"
-                    font.pixelSize: 11
-                    color: root.calendarOpen ? "#fabd2f" : "#b8bb26"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize11
+                    color: root.calendarOpen ? Theme.iconWidgetOpen : Theme.iconWidget
                     text: Qt.formatDateTime(clock.date, modelData)
                 }
                 Rectangle {
@@ -80,8 +82,8 @@ Item {
                     width: numText.width * 0.8
                     height: 2
                     radius: 1
-                    color: root.calendarOpen ? "#fabd2f" : "#b8bb26"
-                    opacity: 0.9
+                    color: root.calendarOpen ? Theme.iconWidgetOpen : Theme.iconWidget
+                    opacity: Theme.opacityHigh
                 }
             }
         }

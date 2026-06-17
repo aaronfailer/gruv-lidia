@@ -1,0 +1,11 @@
+[Unit]
+Description=Save Hyprland session state on logout/shutdown
+DefaultDependencies=false
+
+[Service]
+Type=exec
+ExecStart=/bin/sleep infinity
+ExecStop=/home/aaronfailer/.config/quickshell/scripts/save-session.sh
+
+[Install]
+WantedBy=default.target

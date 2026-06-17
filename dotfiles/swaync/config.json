@@ -1,0 +1,10 @@
+{
+  "positionX": "right",
+  "positionY": "top",
+  "control-center-width": 300,
+  "control-center-height": 400,
+  "notification-window-width": 280,
+  "notification-icon-size": 24,
+  "notification-body-height": 60,
+  "fit-to-screen": false
+}

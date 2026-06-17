@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "."
 
 Item {
     id: root
@@ -38,9 +39,9 @@ Item {
 
     Text {
         anchors.centerIn: parent
-        font.family: "FiraCode Nerd Font"
-        font.pixelSize: 14
-        color: root.volumeOpen ? "#fabd2f" : (root.muted ? "#928374" : "#b8bb26")
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSize14
+        color: root.volumeOpen ? Theme.iconWidgetOpen : (root.muted ? Theme.textMuted : Theme.iconWidget)
         text: root.muted ? "󰝟" : (root.volume > 0.5 ? "󰕾" : "󰖀")
     }
 

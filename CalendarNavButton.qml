@@ -1,4 +1,5 @@
 import QtQuick
+import "."
 
 Rectangle {
     id: btn
@@ -11,14 +12,14 @@ Rectangle {
     width: 26
     height: 26
     radius: 6
-    color: hover.containsMouse ? "#3c3836" : "transparent"
+    color: hover.containsMouse ? Theme.surfaceHover : "transparent"
 
     Text {
         anchors.centerIn: parent
         text: btn.glyph
-        font.family: "FiraCode Nerd Font"
-        font.pixelSize: btn.glyph === "•" ? 14 : 16
-        color: hover.containsMouse ? "#b8bb26" : "#928374"
+        font.family: Theme.fontFamily
+        font.pixelSize: btn.glyph === "\u2022" ? Theme.fontSize14 : Theme.fontSize16
+        color: hover.containsMouse ? Theme.accent : Theme.textMuted
     }
 
     MouseArea {

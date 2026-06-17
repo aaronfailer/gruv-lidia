@@ -1,12 +1,16 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import "."
 
 Item {
     id: item
     property string clientAddress: ""
     property string clientClass: ""
+    property string clientIcon: ""
     property bool isMinimized: false
+
+    signal taskChanged()
 
     width: 26
     height: 26
@@ -18,9 +22,9 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 6
-        color: hoverHandler.hovered ? "#3c3836" : "transparent"
-        border.color: isFocused ? "#b8bb26" : "transparent"
+        radius: Theme.radius6
+        color: hoverHandler.hovered ? Theme.surfaceHover : "transparent"
+        border.color: isFocused ? Theme.iconWidget : "transparent"
         border.width: isFocused ? 1 : 0
     }
 
@@ -28,10 +32,10 @@ Item {
         anchors.centerIn: parent
         width: 18
         height: 18
-        source: "image://icon/" + clientClass
+        source: clientIcon ? "image://icon/" + clientIcon : "image://icon/" + clientClass
         fillMode: Image.PreserveAspectFit
         smooth: true
-        opacity: isMinimized ? 0.4 : (isFocused ? 1.0 : 0.7)
+        opacity: isMinimized ? Theme.opacityDisabled : (isFocused ? 1.0 : Theme.opacityDim)
     }
 
     HoverHandler {
@@ -43,14 +47,12 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (isMinimized) {
-                const currentWs = Hyprland.focusedWorkspace.id
-                Hyprland.dispatch("workspace 99")
-                Hyprland.dispatch("movetoworkspace " + currentWs)
-            } else if (isFocused) {
-                Hyprland.dispatch("movetoworkspacesilent 99")
+                const ws = Hyprland.focusedWorkspace.id
+                Hyprland.dispatch("movetoworkspacesilent " + ws + ",address:0x" + clientAddress)
             } else {
-                Hyprland.dispatch("focuswindow address:" + clientAddress)
+                Hyprland.dispatch("movetoworkspacesilent 99,address:0x" + clientAddress)
             }
+            taskChanged()
         }
     }
 }

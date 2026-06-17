@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "."
 
 Item {
     id: panel
@@ -95,7 +96,7 @@ Item {
         }
     }
 
-    Process { id: volUp;   command: ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%+"]; onExited: volReader.running = true }
+    Process { id: volUp;   command: ["bash", "-c", "wpctl set-volume @DEFAULT_AUDIO_SINK@ $(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{v=$2+0.05; if(v>1.2)v=1.2; print v}')"]; onExited: volReader.running = true }
     Process { id: volDown; command: ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-"]; onExited: volReader.running = true }
     Process { id: volMute; command: ["wpctl", "set-mute",   "@DEFAULT_AUDIO_SINK@", "toggle"]; onExited: volReader.running = true }
     Process { id: setVolProcess; property string vol: "0.5"; command: ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", vol]; onExited: volReader.running = true }
@@ -123,9 +124,9 @@ Item {
         spacing: 10
 
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 11
-            color: "#928374"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize11
+            color: Theme.textMuted
             text: "Volumen"
         }
 
@@ -135,9 +136,9 @@ Item {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                font.family: "FiraCode Nerd Font"
-                font.pixelSize: 14
-                color: panel.muted ? "#928374" : "#b8bb26"
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.fontSize14
+                color: panel.muted ? Theme.textMuted : Theme.accent
                 text: panel.muted ? "󰝟" : "󰕾"
                 MouseArea {
                     anchors.fill: parent
@@ -146,38 +147,42 @@ Item {
                 }
             }
 
-            Rectangle {
-                id: sliderTrack
-                width: parent.width - 60
-                height: 6
-                radius: 3
-                color: "#3c3836"
+            Column {
+                width: parent.width - 22
                 anchors.verticalCenter: parent.verticalCenter
+                spacing: 2
+
+                Text {
+                    anchors.right: parent.right
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSize9
+                    color: panel.volume > 1.0 ? "#e06c75" : Theme.textPrimary
+                    text: Math.round(panel.volume * 100) + "%"
+                }
 
                 Rectangle {
-                    width: parent.width * Math.min(panel.volume, 1.0)
-                    height: parent.height
-                    radius: parent.radius
-                    color: panel.muted ? "#928374" : "#b8bb26"
-                }
+                    id: sliderTrack
+                    width: parent.width
+                    height: 6
+                    radius: Theme.radius3
+                    color: Theme.surface
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        setVolProcess.vol = (mouseX / width).toFixed(2)
-                        setVolProcess.running = true
+                    Rectangle {
+                        width: parent.width * Math.min(panel.volume / 1.2, 1.0)
+                        height: parent.height
+                        radius: parent.radius
+                        color: panel.muted ? Theme.textMuted : (panel.volume > 1.0 ? "#e06c75" : Theme.accent)
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            setVolProcess.vol = Math.min(1.2, (mouseX / width) * 1.2).toFixed(2)
+                            setVolProcess.running = true
+                        }
                     }
                 }
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                font.family: "FiraCode Nerd Font"
-                font.pixelSize: 10
-                color: "#ebdbb2"
-                text: Math.round(panel.volume * 100) + "%"
-                width: 32
             }
         }
 
@@ -186,29 +191,29 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             Rectangle {
-                width: 28; height: 20; radius: 4
-                color: volDownHover.containsMouse ? "#3c3836" : "transparent"
-                border.color: "#504945"; border.width: 1
-                Text { anchors.centerIn: parent; font.family: "FiraCode Nerd Font"; font.pixelSize: 12; color: "#ebdbb2"; text: "−" }
+                width: 28; height: 20; radius: Theme.radius4
+                color: volDownHover.containsMouse ? Theme.surfaceHover : "transparent"
+                border.color: Theme.border; border.width: 1
+                Text { anchors.centerIn: parent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize12; color: Theme.textPrimary; text: "−" }
                 MouseArea { id: volDownHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: volDown.running = true }
             }
 
             Rectangle {
-                width: 28; height: 20; radius: 4
-                color: volUpHover.containsMouse ? "#3c3836" : "transparent"
-                border.color: "#504945"; border.width: 1
-                Text { anchors.centerIn: parent; font.family: "FiraCode Nerd Font"; font.pixelSize: 12; color: "#ebdbb2"; text: "+" }
+                width: 28; height: 20; radius: Theme.radius4
+                color: volUpHover.containsMouse ? Theme.surfaceHover : "transparent"
+                border.color: Theme.border; border.width: 1
+                Text { anchors.centerIn: parent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize12; color: Theme.textPrimary; text: "+" }
                 MouseArea { id: volUpHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: volUp.running = true }
             }
         }
 
-        Rectangle { width: parent.width; height: 1; color: "#3c3836" }
+        Rectangle { width: parent.width; height: 1; color: Theme.surface }
 
         // Salidas
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 11
-            color: "#928374"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize11
+            color: Theme.textMuted
             text: "Salidas"
         }
 
@@ -223,7 +228,7 @@ Item {
                     width: parent.width
                     height: 22
 
-                    Rectangle { anchors.fill: parent; radius: 4; color: sinkHover.containsMouse ? "#3c3836" : "transparent"; border.color: modelData.isDefault ? "#b8bb26" : "transparent"; border.width: 1 }
+                    Rectangle { anchors.fill: parent; radius: Theme.radius4; color: sinkHover.containsMouse ? Theme.surfaceHover : "transparent"; border.color: modelData.isDefault ? Theme.accent : "transparent"; border.width: 1 }
 
                     Item {
                         id: sinkTextClip
@@ -235,9 +240,9 @@ Item {
 
                         Text {
                             id: sinkText
-                            font.family: "FiraCode Nerd Font"
-                            font.pixelSize: 10
-                            color: modelData.isDefault ? "#b8bb26" : "#a89984"
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.fontSize10
+                            color: modelData.isDefault ? Theme.accent : Theme.textSecondary
                             text: (modelData.isDefault ? "● " : "○ ") + modelData.name
                         }
                     }
@@ -266,13 +271,13 @@ Item {
             }
         }
 
-        Rectangle { width: parent.width; height: 1; color: "#3c3836" }
+        Rectangle { width: parent.width; height: 1; color: Theme.surface }
 
         // Entradas
         Text {
-            font.family: "FiraCode Nerd Font"
-            font.pixelSize: 11
-            color: "#928374"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSize11
+            color: Theme.textMuted
             text: "Entradas"
         }
 
@@ -287,7 +292,7 @@ Item {
                     width: parent.width
                     height: 22
 
-                    Rectangle { anchors.fill: parent; radius: 4; color: sourceHover.containsMouse ? "#3c3836" : "transparent"; border.color: modelData.isDefault ? "#b8bb26" : "transparent"; border.width: 1 }
+                    Rectangle { anchors.fill: parent; radius: Theme.radius4; color: sourceHover.containsMouse ? Theme.surfaceHover : "transparent"; border.color: modelData.isDefault ? Theme.accent : "transparent"; border.width: 1 }
 
                     Item {
                         id: sourceTextClip
@@ -299,9 +304,9 @@ Item {
 
                         Text {
                             id: sourceText
-                            font.family: "FiraCode Nerd Font"
-                            font.pixelSize: 10
-                            color: modelData.isDefault ? "#b8bb26" : "#a89984"
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.fontSize10
+                            color: modelData.isDefault ? Theme.accent : Theme.textSecondary
                             text: (modelData.isDefault ? "● " : "○ ") + modelData.name
                         }
                     }

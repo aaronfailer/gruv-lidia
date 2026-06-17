@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Restore Hyprland session
+Exec=$HOME/.config/quickshell/scripts/restore-session.sh
+X-KDE-autostart-phase=2
+OnlyShowIn=KDE;
